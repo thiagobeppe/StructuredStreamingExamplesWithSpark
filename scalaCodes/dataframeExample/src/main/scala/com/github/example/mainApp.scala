@@ -58,4 +58,13 @@ object mainApp extends App {
   val filtro_civil = col("marital").contains("married")
   println(data.select("age", "job", "marital").where(col("job").isin("unemployed", "retired")).where(filtro_civil.and(filtro_idade)).show(5))
 
+
+  // Aula 04
+
+  val simpleQuery = data.selectExpr("age + 10", "age").orderBy("age").show(10)
+
+  val seed = 2019
+  val withReplacement = false
+  val fraction = 0.1
+  data.sample(withReplacement,fraction,seed).show()
 }
