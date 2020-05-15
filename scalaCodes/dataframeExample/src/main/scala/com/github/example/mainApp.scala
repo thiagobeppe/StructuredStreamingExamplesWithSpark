@@ -1,9 +1,9 @@
 package com.github.example
 
-import org.apache.spark.sql.SparkSession
-import org.apache.spark.sql.functions.{lit, expr, col}
-
+import org.apache.spark.sql.{Row, SparkSession}
+import org.apache.spark.sql.functions.{col, expr, lit}
 import com.github.example.utils.utils.setupLogging
+import org.apache.spark.sql.types.{IntegerType, StringType, StructField, StructType}
 
 object mainApp extends App {
 
@@ -67,4 +67,27 @@ object mainApp extends App {
   val withReplacement = false
   val fraction = 0.1
   data.sample(withReplacement,fraction,seed).show()
+
+
+  //aula 05 missing data & creating a DataFrame
+
+  val schema = new StructType(Array(
+    StructField("age", IntegerType, true),
+    StructField("job", StringType , true)
+  ))
+
+  val newRoews = Seq(Row(30, "DS"), Row(20, "Dev Java" ), Row(10, null
+  ))
+
+  val parallelizeRows = spark.sparkContext.parallelize(newRoews)
+  val dados_manual = spark.createDataFrame(parallelizeRows, schema)
+
+  dados_manual.show()
+
+  //Missing
+  dados_manual.select("job","age").na.drop("all").show() // Somente se TODAS estiverem null
+  dados_manual.select("job","age").na.drop("any").show() // Se uma das duas
+  dados_manual.na.fill("Desconhecido").show()
+
+
 }
